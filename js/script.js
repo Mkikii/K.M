@@ -37,7 +37,7 @@ if (localStorage.getItem('darkMode') === 'true') {
 // Fetch business quotes from API
 async function fetchTestimonials() {
     try {
-        const response = await fetch('https://type.fit/api/quotes');
+        const response = await fetch('https:type.fit/api/quotes');
         const quotes = await response.json();
         
         const businessQuotes = quotes
