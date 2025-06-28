@@ -1,68 +1,36 @@
-// Smooth scroll for nav links
-document.querySelectorAll('a.nav-link[href^="#"]').forEach(link => {
-    link.addEventListener('click', function(e) {
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            e.preventDefault();
-            window.scrollTo({
-                top: target.offsetTop - 70,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
+// Dark Mode Functionality
+const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-// Contact form alert
-document.querySelector('form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Thank you for reaching out, I will get back to you soon!');
-    this.reset();
-});
-
-// Dark mode toggle
-document.getElementById('dark-mode-toggle').addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
-    this.textContent = document.body.classList.contains('dark-mode') 
-        ? '☀️ Light Mode' 
-        : '🌓 Dark Mode';
-    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-});
-
-// Check for saved dark mode preference
-if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-    document.getElementById('dark-mode-toggle').textContent = '☀️ Light Mode';
+// Initialize dark mode from localStorage
+function initDarkMode() {
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    document.body.classList.toggle('dark-mode', isDark);
+    darkModeToggle.textContent = isDark ? '☀️ Light Mode' : '🌓 Dark Mode';
 }
 
-// Fetch business quotes from API
-async function fetchTestimonials() {
-    try {
-        const response = await fetch('https://type.fit/api/quotes');
-        const quotes = await response.json();
-        
-        const businessQuotes = quotes
-            .filter(quote => {
-                const quoteText = quote.text.toLowerCase();
-                return quoteText.includes('business') || 
-                       quoteText.includes('success') || 
-                       quoteText.includes('work');
-            })
-            .slice(0, 4)
-            .map(quote => `
-                <div class="col-md-5 mb-4">
-                    <div class="testimonial-card">
-                        <p>"${quote.text}"</p>
-                        <span>- ${quote.author || 'Business Leader'}</span>
-                    </div>
-                </div>
-            `).join('');
-        
-        document.getElementById('testimonials-container').innerHTML += businessQuotes;
-        
-    } catch (error) {
-        console.error('Error fetching testimonials:', error);
+// Toggle dark mode
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', isDark);
+    darkModeToggle.textContent = isDark ? '☀️ Light Mode' : '🌓 Dark Mode';
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', initDarkMode);
+darkModeToggle.addEventListener('click', toggleDarkMode);
+
+// Smooth scrolling for nav links
+document.querySelectorAll('a.nav-link[href^="#"]').forEach(link => {
+    link.addEventListener('click', smoothScroll);
+});
+
+function smoothScroll(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+        window.scrollTo({
+            top: target.offsetTop - 70,
+            behavior: 'smooth'
+        });
     }
 }
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', fetchTestimonials);
